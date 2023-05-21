@@ -55,6 +55,7 @@ class TestMemoize(unittest.TestCase):
 
         class TestClass:
             """ Test class """
+
             def a_method(self):
                 """ method to be mocked"""
                 return 42
