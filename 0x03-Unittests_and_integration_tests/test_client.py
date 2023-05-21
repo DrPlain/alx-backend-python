@@ -12,8 +12,8 @@ class TestGithubOrgClient(unittest.TestCase):
         ('google'),
         ('abc')
     ])
-    def test_org(self, input):
+    @patch('client.get_json')
+    def test_org(self, input, mock_get_json):
         """ Test that GithubOrgClient returns correct value"""
-        with patch('client.get_json') as mock_get_json:
-            mock_get_json.assert_called_once_with(
+        mock_get_json.assert_called_once_with(
                 f'https://api.github.com/orgs/{input}')
