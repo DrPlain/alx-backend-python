@@ -2,17 +2,6 @@ from seed import connect_db
 import time
 
 
-class User:
-    def __init__(self, user_id, name, email, age):
-        self.user_id = user_id
-        self.name = name
-        self.email = email
-        self.age = age
-
-    def __str__(self):
-        return f"User(user_id={self.user_id}, name={self.name}, email={self.email}, age={self.age})"
-
-
 def stream_users_in_batches(batch_size):
     try:
         connection = connect_db()
