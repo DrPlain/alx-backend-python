@@ -1,5 +1,6 @@
 import mysql.connector
 import csv
+from uuid import uuid4
 
 
 def connect_db():
@@ -44,7 +45,7 @@ def create_table(connection):
     user_id CHAR(36) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
-    age DECIMAL(5, 2) NOT NULL,
+    age DECIMAL(4) NOT NULL,
     INDEX (user_id));"""
     cursor = connection.cursor()
     try:
@@ -61,13 +62,14 @@ def insert_data(connection, data):
         query = """
         INSERT INTO user_data (user_id, name, email, age) VALUES (%s,%s,%s,%s)
         """
-        with open('data.csv', 'r') as file:
+        with open(data, 'r') as file:
             csv_reader = csv.reader(file)
             header = next(csv_reader)  # Skip the heading
 
             for row in csv_reader:
+                data_complete = [str(uuid4())] + row
                 try:
-                    cursor.execute(query, row)
+                    cursor.execute(query, data_complete)
 
                     # print('All data successfully inserted')
                 except Exception as err:
