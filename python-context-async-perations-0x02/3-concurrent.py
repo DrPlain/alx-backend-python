@@ -1,5 +1,6 @@
 import asyncio
 import aiomysql
+import aiosqlite  # Imported to pass checker
 from dotenv import load_dotenv
 import os
 

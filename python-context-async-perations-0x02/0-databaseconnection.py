@@ -37,6 +37,6 @@ class DatabaseConnection:
 
 with DatabaseConnection(db_host=os.getenv('DB_HOST'), db_name=os.getenv('DB_NAME'), db_password=os.getenv('DB_PASSWORD'), db_user=os.getenv('DB_USER')) as conn:
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM user_data')
+    cursor.execute('SELECT * FROM users')
     users = cursor.fetchall()
     [print(user) for user in users]
