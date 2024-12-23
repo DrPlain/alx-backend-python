@@ -35,10 +35,25 @@ class MessageSerializer(serializers.ModelSerializer):
 
 
 class ConversationSerializer(serializers.ModelSerializer):
-    participants = UserSerializer(many=True, read_only=True)
-    messages = MessageSerializer(many=True, read_only=True)
+    # participants = UserSerializer(many=True, read_only=True)
+    # messages = MessageSerializer(many=True, read_only=True)
+    participants = serializers.ListField(
+        child=serializers.UUIDField(), write_only=True  # Accept a list of user UUIDs
+    )
+    messages = serializers.SerializerMethodField()
 
     class Meta:
         model = Conversation
         fields = ['conversation_id', 'participants', 'messages', 'created_at']
         read_only_fields = ['conversation_id', 'created_at']
+
+    def get_messages(self, obj):
+        messages = obj.messages.all()  # Reverse relationship via related_name
+        return MessageSerializer(messages, many=True)
+
+    def validate_participants(self, value):
+        participants = User.objects.filter(user_id__in=value)
+        if participants.count() != len(value):
+            raise serializers.ValidationError(
+                'One or more of the participants do not exist')
+        return value
