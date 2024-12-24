@@ -1,10 +1,11 @@
-from rest_framework.routers import DefaultRouter
-from .views import ConverstaionViewset, MessageViewset, UserViewset
+from rest_framework import routers
+from django.urls import path, include
+from .views import ConverstaionViewSet, MessageViewSet, UserViewSet
 
-router = DefaultRouter()
+router = routers.DefaultRouter()
 
-router.register(r'conversation', ConverstaionViewset)
-router.register(r'message', MessageViewset)
-router.register(r'user', UserViewset)
+router.register(r'conversation', ConverstaionViewSet)
+router.register(r'message', MessageViewSet)
+router.register(r'user', UserViewSet)
 
 urlpatterns = router.urls
