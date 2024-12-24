@@ -10,6 +10,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'user_id',
+            'password',
             'first_name',
             'last_name',
             'email',
@@ -26,11 +27,17 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class MessageSerializer(serializers.ModelSerializer):
-    sender = UserSerializer(read_only=True)
+    # sender = UserSerializer(read_only=True)
+    # conversation = ConversationSerializer(read_only=True)
+    sender_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all())  # or use `User` if it's not a custom model
+    conversation_id = serializers.PrimaryKeyRelatedField(
+        queryset=Conversation.objects.all())  # making it read-only
 
     class Meta:
         model = Message
-        fields = ['message_id', 'sender', 'message_body', 'sent_at']
+        fields = ['message_id', 'conversation_id',
+                  'sender_id', 'message_body', 'sent_at']
         read_only_fields = ['message_id', 'sent_at']
 
 
@@ -49,7 +56,7 @@ class ConversationSerializer(serializers.ModelSerializer):
 
     def get_messages(self, obj):
         messages = obj.messages.all()  # Reverse relationship via related_name
-        return MessageSerializer(messages, many=True)
+        return MessageSerializer(messages, many=True).data
 
     def validate_participants(self, value):
         participants = User.objects.filter(user_id__in=value)

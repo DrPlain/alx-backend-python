@@ -13,13 +13,14 @@ class User(AbstractUser):
     user_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     # first_name = models.CharField(max_length=255)
     # last_name = models.CharField(max_length=255)
-    # email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True)
     password_hash = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=255)
-    role = models.CharField(choices=ROLE_CHOICES)
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
 
     USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'role']
 
     class Meta:
         indexes = [
@@ -45,9 +46,9 @@ class Conversation(models.Model):
 class Message(models.Model):
     message_id = models.UUIDField(
         primary_key=True, default=uuid4, editable=False)
-    sender = models.ForeignKey(
+    sender_id = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='messages')
-    conversation = models.ForeignKey(
+    conversation_id = models.ForeignKey(
         Conversation, on_delete=models.CASCADE, related_name='messages')
     message_body = models.TextField()
     sent_at = models.DateTimeField(auto_now_add=True)
