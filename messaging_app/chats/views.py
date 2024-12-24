@@ -9,7 +9,7 @@ from .serializers import ConversationSerializer, MessageSerializer, UserSerializ
 # Create your views here.
 
 
-class ConverstaionViewSet(ModelViewSet):
+class ConversationViewSet(ModelViewSet):
     queryset = Conversation.objects.all()
     serializer_class = ConversationSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
