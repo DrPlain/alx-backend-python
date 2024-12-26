@@ -1,44 +1,50 @@
 from rest_framework import serializers
 from .models import User, Message, Conversation
 from django.contrib.auth.hashers import make_password
+from rest_framework.validators import ValidationError
 
 
-class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, required=True)
+class SignUpSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(
+        write_only=True, required=True, min_length=8)
 
     class Meta:
         model = User
         fields = [
-            'user_id',
-            'password',
+            'id',
             'first_name',
             'last_name',
             'email',
+            'password',
             'phone_number',
             'role',
-            'created_at'
+            'created_at',
+            # 'password_hash',
+            # 'is_active'
         ]
-        read_only_fields = ['created_at, user_id, password_hash']
+        read_only_fields = ['created_at', 'id']
 
-    def create(self, validated_data):
-        validated_data['password_hash'] = make_password(
-            validated_data['password'])
-        return super().create(validated_data)
+    def validate(self, attrs):
+        email = attrs['email']
+        email_exists = User.objects.filter(email=email).exists()
+        if email_exists:
+            raise ValidationError('A user with this email already exist')
+        return super().validate(attrs)
 
 
 class MessageSerializer(serializers.ModelSerializer):
     # sender = UserSerializer(read_only=True)
     # conversation = ConversationSerializer(read_only=True)
-    sender_id = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.all())  # or use `User` if it's not a custom model
+    # sender_id = serializers.PrimaryKeyRelatedField(
+    #     queryset=User.objects.all())  # or use `User` if it's not a custom model
     conversation_id = serializers.PrimaryKeyRelatedField(
         queryset=Conversation.objects.all())  # making it read-only
 
     class Meta:
         model = Message
         fields = ['message_id', 'conversation_id',
-                  'sender_id', 'message_body', 'sent_at']
-        read_only_fields = ['message_id', 'sent_at']
+                  'message_body', 'sent_at', 'sender_id']
+        read_only_fields = ['message_id', 'sent_at', 'sender_id']
 
 
 class ConversationSerializer(serializers.ModelSerializer):
@@ -59,7 +65,7 @@ class ConversationSerializer(serializers.ModelSerializer):
         return MessageSerializer(messages, many=True).data
 
     def validate_participants(self, value):
-        participants = User.objects.filter(user_id__in=value)
+        participants = User.objects.filter(id__in=value)
         if participants.count() != len(value):
             raise serializers.ValidationError(
                 'One or more of the participants do not exist')

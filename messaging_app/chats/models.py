@@ -1,6 +1,29 @@
 from uuid import uuid4
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.base_user import BaseUserManager
+
+
+class CustomUserManager(BaseUserManager):
+    def create_user(self, email, password, **extra_fields):
+        email = self.normalize_email(email)
+        user = self.model(
+            email=email,
+            **extra_fields
+        )
+        user.set_password(password)
+        user.save()
+        return user
+
+    def create_superuser(self, email, password, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff set to True')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser set to True')
+        return self.create_user(email=email, password=password, **extra_fields)
 
 
 class User(AbstractUser):
@@ -10,15 +33,18 @@ class User(AbstractUser):
         ('host', 'host'),
         ('admin', 'admin')
     ]
-    user_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     # first_name = models.CharField(max_length=255)
     # last_name = models.CharField(max_length=255)
+    username = models.CharField(
+        max_length=150, blank=True, null=True, unique=False)
     email = models.EmailField(unique=True)
-    password_hash = models.CharField(max_length=255)
+    password = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=255)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    objects = CustomUserManager()
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'role']
 
