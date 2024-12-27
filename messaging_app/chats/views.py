@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.viewsets import ModelViewSet
 from .models import Conversation, Message, User
+from .filters import MessageFilter
 from .serializers import ConversationSerializer, MessageSerializer, SignUpSerializer
 from django.contrib.auth.hashers import make_password
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
@@ -40,18 +41,13 @@ class MessageViewSet(ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    # Filter by conversation or sender
-    filterset_fields = ['conversation_id', 'sender_id']
-    search_fields = ['content']  # Enable search in message content
-    ordering_fields = ['timestamp']  # Enable ordering by timestamp
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = MessageFilter
 
     def create(self, request, *args, **kwargs):
         # response = super().create(request, *args, **kwargs)
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-
-            print(request.user)
             serializer.save(sender_id=request.user)
             return Response({
                 'message': 'Message created successfully',
@@ -84,5 +80,6 @@ class SignUpView(generics.GenericAPIView):
 
 
 class UserListAPIView(ListAPIView):
+    permission_classes = [AllowAny]
     queryset = User.objects.all()
     serializer_class = SignUpSerializer
