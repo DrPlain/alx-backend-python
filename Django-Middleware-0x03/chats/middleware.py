@@ -63,7 +63,7 @@ class RestrictAccessByTimeMiddleware:
     #     return user_timezone
 
 
-class RestrictNumberOfPostMessages:
+class OffensiveLanguageMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
         self.ip_request_data = {}  # Dictionary to track request data by IP
