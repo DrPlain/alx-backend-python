@@ -108,3 +108,17 @@ class OffensiveLanguageMiddleware:
         else:
             ip = request.META.get('REMOTE_ADDR')
         return ip
+
+
+class RolepermissionMiddleware:
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        if '/users' in request.path and request.method == 'DELETE':
+            if not request.user:
+                return HttpResponseForbidden('Authentication is required')
+            if not hasattr(request.user, "role") or request.user.role not in ['admin', 'moderator']:
+                return HttpResponseForbidden('You must be an admin or moderator to perform this action')
+        return self.get_response(request)
