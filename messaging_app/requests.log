@@ -1421,3 +1421,14 @@
 2025-01-20 15:16:11.678248 - User: AnonymousUser - Path: /api-auth/messages/ - IP: 127.0.0.1
 2025-01-20 15:16:32.627966 - User: AnonymousUser - Path: /socketcluster/ - IP: 127.0.0.1
 2025-01-20 15:16:54.509362 - User: AnonymousUser - Path: /socketcluster/ - IP: 127.0.0.1
+2025-01-21 12:01:32.282412 - User: AnonymousUser - Path: /socketcluster/ - IP: 172.18.0.1
+2025-01-21 12:01:42.183026 - User: AnonymousUser - Path: / - IP: 172.18.0.1
+2025-01-21 12:01:42.270394 - User: AnonymousUser - Path: /favicon.ico - IP: 172.18.0.1
+2025-01-21 12:01:48.706769 - User: AnonymousUser - Path: /swagger - IP: 172.18.0.1
+2025-01-21 12:01:48.762310 - User: AnonymousUser - Path: /swagger/ - IP: 172.18.0.1
+2025-01-21 12:01:49.739361 - User: AnonymousUser - Path: /swagger/ - IP: 172.18.0.1
+2025-01-21 12:01:52.369522 - User: AnonymousUser - Path: /socketcluster/ - IP: 172.18.0.1
+2025-01-21 12:02:06.086080 - User: AnonymousUser - Path: /api-auth/messages/ - IP: 172.18.0.1
+2025-01-21 12:02:33.594935 - User: AnonymousUser - Path: /socketcluster/ - IP: 172.18.0.1
+2025-01-21 12:02:48.034188 - User: AnonymousUser - Path: /socketcluster/ - IP: 172.18.0.1
+2025-01-21 12:03:04.626746 - User: AnonymousUser - Path: /socketcluster/ - IP: 172.18.0.1
