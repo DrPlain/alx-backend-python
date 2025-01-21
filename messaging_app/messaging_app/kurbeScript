@@ -31,7 +31,7 @@ verify_cluster() {
 # Function to retrieve available nodes
 get_nodes() {
   echo "Retrieving available nodes in the cluster..."
-  kubectl get nodes
+  kubectl get pods
 }
 
 # Main script execution
