@@ -30,8 +30,8 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = config['ALLOWED_HOSTS']
-
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost', cast=lambda v: [
+                       s.strip() for s in v.split(',')])
 AUTH_USER_MODEL = 'chats.User'
 # Application definition
 
@@ -86,26 +86,28 @@ WSGI_APPLICATION = 'messaging_app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': config('MYSQL_DB'),
-        'USER': config('MYSQL_USER'),
-        'PASSWORD': config('MYSQL_PASSWORD'),
-        'HOST': config('MYSQL_HOST', 'db'),
-        'PORT': config('MYSQL_PORT'),
-        # 'OPTIONS': {
-        #     'driver': 'mysql.connector',
-        # }
+try:
+    config('DB_ENGINE')
+    DATABASES = {
+        'default': {
+            'ENGINE': config('DB_ENGINE'),
+            'NAME': config('MYSQL_DB'),
+            'USER': config('MYSQL_USER'),
+            'PASSWORD': config('MYSQL_PASSWORD'),
+            'HOST': config('MYSQL_HOST'),
+            'PORT': config('MYSQL_PORT'),
+            # 'OPTIONS': {
+            #     'driver': 'mysql.connector',
+            # }
+        }
     }
-}
+except Exception as err:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

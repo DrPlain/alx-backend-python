@@ -15,7 +15,7 @@ spec:
         app: django-messaging
     spec:
       containers:
-        - image: drplain004/django-messaging_app:v1.0.2
+        - image: drplain004/messaging-app:v1.0.0
           name: django-messaging
           envFrom:
             - secretRef:
@@ -31,12 +31,14 @@ metadata:
     app: django-messaging
 spec:
   type: ClusterIP
+  # type: NodePort
   selector:
     app: django-messaging
   ports:
     - protocol: TCP
       port: 8000
       targetPort: 8000
+      # nodePort: 31034
 ---
 apiVersion: apps/v1
 kind: Deployment

@@ -1937,3 +1937,7 @@
 2025-01-21 22:04:58.251098 - User: AnonymousUser - Path: /swagger/ - IP: 172.18.0.1
 2025-01-21 22:05:00.641889 - User: AnonymousUser - Path: /swagger/ - IP: 172.18.0.1
 2025-01-21 22:38:03.564468 - User: AnonymousUser - Path: /swagger/ - IP: 172.18.0.1
+2025-01-23 13:13:57.383468 - User: AnonymousUser - Path: /swagger/ - IP: 127.0.0.1
+2025-01-23 13:14:04.354591 - User: AnonymousUser - Path: /swagger/ - IP: 127.0.0.1
+2025-01-23 13:14:15.729952 - User: AnonymousUser - Path: /api-auth/messages/ - IP: 127.0.0.1
+2025-01-23 13:14:19.201747 - User: AnonymousUser - Path: /socketcluster/ - IP: 127.0.0.1
