@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         GITHUB_CREDENTIALS_ID = '2dcd791b-80ff-48be-abf0-1b4fa7bd81d9' // Replace with your Jenkins GitHub credentials ID
-        APP_REPO_URL = 'https://github.com/DrPlain/alx-backend-python/tree/master/messaging_app' // Replace with your repository URL
+        APP_REPO_URL = 'git@github.com:DrPlain/alx-backend-python.git' // Replace with your repository URL
     }
 
     stages {
