@@ -6,7 +6,7 @@ metadata:
     app: django-messaging
     version: blue
 spec:
-  replicas: 3
+  replicas: 4
   selector:
     matchLabels:
       app: django-messaging
@@ -18,14 +18,13 @@ spec:
         version: blue
     spec:
       containers:
-        - image: drplain004/messaging-app:v2.0.0
+        - image: drplain004/messaging-app:v1.0.0
           name: django-messaging-blue
           envFrom:
             - secretRef:
                 name: mysql-secrets
           ports:
             - containerPort: 8000
-
 ---
 apiVersion: apps/v1
 kind: Deployment
