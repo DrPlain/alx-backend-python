@@ -6,6 +6,18 @@ pipeline {
         REPO_URL = 'https://github.com/DrPlain/messaging_app.git' // Replace with your repository URL
         BRANCH = 'master' // Replace with the branch name you want to build
         VENV_DIR = '.venv' // Directory for Python virtual environment
+        SECRET_KEY = 'django-secret-key'
+        MYSQL_ROOT_PASSWORD='MYSQL_ROOT_PASSWORD'
+        MYSQL_DB='MYSQL_DB'
+        MYSQL_USER='MYSQL_USER'
+        MYSQL_PASSWORD='MYSQL_PASSWORD'
+        MYSQL_HOST='MYSQL_HOST'
+        MYSQL_PORT='MYSQL_PORT'
+        ALLOWED_HOSTS='ALLOWED_HOSTS'
+        DB_ENGINE='DB_ENGINE'
+        DOCKER_IMAGE_NAME = 'drplain004/messaging-app' // Replace with your Docker image name
+        DOCKER_REGISTRY = 'docker.io' // Registry for docker hub
+        DOCKER_CREDENTIALS_ID = 'docker-credentials-id' // Jenkins credentials for Docker registry
     }
 
     stages {
@@ -13,7 +25,7 @@ pipeline {
             steps {
                 script {
                     echo 'Checking out code from the Git branch...'
-                    git branch: "${BRANCH}", credentialsId: "${GITHUB_CREDENTIALS_ID}", url: "${REPO_URL}"
+                    git branch: "${BRANCH}", credentialsId: "${GITHUB_CREDENTIALS_ID}", url: "${REPO_URL}", timeout: 300
                 }
             }
         }
@@ -23,27 +35,41 @@ pipeline {
                 echo 'Installing dependencies from requirements.txt...'
                 sh '''
                 python3 -m venv ${VENV_DIR}
-                source ${VENV_DIR}/bin/activate
+                . ${VENV_DIR}/bin/activate
                 pip3 install --upgrade pip
-                pip3 install -r requirements.txt
+                pip3 install -r messaging_app/requirements.txt
                 '''
             }
         }
 
         stage('Run Tests') {
             steps {
-                echo 'Running tests using pytest...'
+                echo 'Running tests...'
                 sh '''
-                source ${VENV_DIR}/bin/activate
-                pytest messaging_app --junitxml=report.xml
+                . ${VENV_DIR}/bin/activate
+                python manage.py test
                 '''
             }
         }
 
-        stage('Generate Report') {
+        stage('Build Docker Image') {
             steps {
-                echo 'Archiving test results...'
-                junit 'report.xml' // Archive the test report in JUnit format
+                echo 'Building Docker image...'
+                script {
+                    dockerImage = docker.build("${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}")
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                echo 'Pushing Docker image to registry...'
+                script {
+                    withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                        sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} ${DOCKER_REGISTRY}"
+                        dockerImage.push()
+                    }
+                }
             }
         }
     }
@@ -60,4 +86,5 @@ pipeline {
             echo 'Pipeline execution failed. Check logs for more details.'
         }
     }
+    
 }
